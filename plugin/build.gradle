@@ -1,9 +1,12 @@
 group 'com.ageet'
 version '0.2'
 
+def artifactBaseName = 'apkname'
+
 buildscript {
     ext {
         kotlin_version = '1.0.2'
+        dokka_version = '0.9.8'
         jgit_version = '4.3.1.201605051710-r'
     }
     repositories {
@@ -12,6 +15,7 @@ buildscript {
     }
     dependencies {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath "org.jetbrains.dokka:dokka-gradle-plugin:$dokka_version"
         classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.6'
     }
 }
@@ -31,14 +35,7 @@ dependencies {
 }
 
 jar {
-    baseName = 'apkname'
-    from configurations.compile.asFileTree.matching {
-        include "**/kotlin-runtime-${kotlin_version}.jar"
-        include "**/kotlin-stdlib-${kotlin_version}.jar"
-        include "**/org.eclipse.jgit-${jgit_version}.jar"
-    }.collect(this.&zipTree)*.matching {
-        exclude 'META-INF/*.RSA', 'META-INF/*.SF','META-INF/*.DSA'
-    }
+    baseName = artifactBaseName
 }
 
 apply plugin: 'com.jfrog.bintray'
@@ -46,7 +43,7 @@ apply plugin: 'com.jfrog.bintray'
 bintray {
     user = project.properties["bintray.user"]
     key = project.properties["bintray.key"]
-    configurations = ['archives']
+    publications = ['defaultPublication']
 
     dryRun = false
     publish = true
@@ -68,6 +65,40 @@ bintray {
             name = project.version
             vcsTag = 'v0.2'
             attributes = ['gradle-plugin': 'com.ageet.apkname:com.ageet:apkname']
+        }
+    }
+}
+
+apply plugin: 'org.jetbrains.dokka'
+
+dokka {
+    moduleName = artifactBaseName
+    outputFormat = 'javadoc'
+    outputDirectory = "$buildDir/javadoc"
+    sourceDirs = sourceSets.main.kotlin.srcDirs
+}
+
+task sourcesJar(type: Jar) {
+    baseName = artifactBaseName
+    classifier = 'sources'
+    from sourceSets.main.kotlin.srcDirs
+}
+
+task javadocJar(type: Jar, dependsOn: dokka) {
+    baseName = artifactBaseName
+    classifier = 'javadoc'
+    from dokka.outputDirectory
+}
+
+apply plugin : 'maven-publish'
+
+publishing {
+    publications {
+        defaultPublication(MavenPublication) {
+            artifactId artifactBaseName
+            from components.java
+            artifact sourcesJar
+            artifact javadocJar
         }
     }
 }
