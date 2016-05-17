@@ -11,7 +11,7 @@ import java.io.File
 
 class ApkNamePlugin : Plugin<Project> {
 
-    lateinit var apkNameExtension: ApkNameExtension
+    private lateinit var apkNameExtension: ApkNameExtension
 
     override fun apply(project: Project?) {
         project?.onEvaluate()
@@ -19,7 +19,7 @@ class ApkNamePlugin : Plugin<Project> {
 
     private fun Project.onEvaluate() {
         afterEvaluate { onAfterEvaluate() }
-        apkNameExtension = android.extensions.create(ApkNameExtension.NAME, ApkNameExtension::class.java)
+        apkNameExtension = android.extensions.create(EXTENSION_NAME, ApkNameExtension::class.java)
     }
 
     private fun Project.onAfterEvaluate() {
@@ -66,7 +66,8 @@ class ApkNamePlugin : Plugin<Project> {
     private val AppExtension.extensions: ExtensionContainer
         get() = (this as ExtensionAware).extensions
 
-    companion object {
-        const val GIT_SHORT_HASH_LENGTH = 7
+    private companion object {
+        private const val GIT_SHORT_HASH_LENGTH = 7
+        private const val EXTENSION_NAME = "apkName"
     }
 }
