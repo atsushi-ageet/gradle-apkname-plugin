@@ -8,12 +8,12 @@ buildscript {
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:2.1.0'
-        classpath 'com.ageet:apkname:0.1'
+        classpath 'com.ageet:apkname:0.2'
     }
 }
 
 apply plugin: 'com.android.application'
-apply plugin: 'apkname'
+apply plugin: 'com.ageet.apkname'
 
 android {
     compileSdkVersion 23

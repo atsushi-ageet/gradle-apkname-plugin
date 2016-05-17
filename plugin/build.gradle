@@ -1,5 +1,5 @@
 group 'com.ageet'
-version '0.1'
+version '0.2'
 
 buildscript {
     ext {
@@ -66,7 +66,7 @@ bintray {
 
         version {
             name = project.version
-            vcsTag = 'v0.1'
+            vcsTag = 'v0.2'
             attributes = ['gradle-plugin': 'com.ageet.apkname:com.ageet:apkname']
         }
     }
