@@ -1,0 +1,73 @@
+group 'com.ageet'
+version '0.1'
+
+buildscript {
+    ext {
+        kotlin_version = '1.0.2'
+        jgit_version = '4.3.1.201605051710-r'
+    }
+    repositories {
+        mavenCentral()
+        jcenter()
+    }
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.6'
+    }
+}
+
+apply plugin: 'kotlin'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile gradleApi()
+    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    compile 'com.android.tools.build:gradle:1.5.0'
+    compile "org.eclipse.jgit:org.eclipse.jgit:$jgit_version"
+    testCompile group: 'junit', name: 'junit', version: '4.11'
+}
+
+jar {
+    baseName = 'apkname'
+    from configurations.compile.asFileTree.matching {
+        include "**/kotlin-runtime-${kotlin_version}.jar"
+        include "**/kotlin-stdlib-${kotlin_version}.jar"
+        include "**/org.eclipse.jgit-${jgit_version}.jar"
+    }.collect(this.&zipTree)*.matching {
+        exclude 'META-INF/*.RSA', 'META-INF/*.SF','META-INF/*.DSA'
+    }
+}
+
+apply plugin: 'com.jfrog.bintray'
+
+bintray {
+    user = project.properties["bintray.user"]
+    key = project.properties["bintray.key"]
+    configurations = ['archives']
+
+    dryRun = false
+    publish = true
+
+    pkg {
+        repo = 'maven'
+        name = 'gradle-apkname-plugin'
+        desc = 'Auto naming for android apk'
+        userOrg = user
+        licenses = ['Apache-2.0']
+        websiteUrl = 'https://github.com/atsushi-ageet/gradle-apkname-plugin'
+        issueTrackerUrl = 'https://github.com/atsushi-ageet/gradle-apkname-plugin/issues'
+        vcsUrl = 'https://github.com/atsushi-ageet/gradle-apkname-plugin.git'
+
+        githubRepo = 'atsushi-ageet/gradle-apkname-plugin'
+        githubReleaseNotesFile = 'README.md'
+
+        version {
+            name = project.version
+            vcsTag = 'v0.1'
+            attributes = ['gradle-plugin': 'com.ageet.apkname:com.ageet:apkname']
+        }
+    }
+}

@@ -1,0 +1,3 @@
+rootProject.name = 'gradle-apkname-plugin'
+
+include ':plugin'
