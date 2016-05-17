@@ -1,0 +1,14 @@
+# Gradle
+.gradle
+build/
+local.properties
+
+# Idea
+*.iml
+.idea/vcs.xml
+.idea/workspace.xml
+.idea/libraries
+.idea/modules.xml
+.idea/misc.xml
+.idea/gradle.xml
+.idea/uiDesigner.xml
