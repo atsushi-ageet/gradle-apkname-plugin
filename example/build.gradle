@@ -1,0 +1,42 @@
+buildscript {
+    repositories {
+        mavenCentral()
+        jcenter()
+        maven {
+            url "https://dl.bintray.com/ageet-atsushi/maven"
+        }
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:2.1.0'
+        classpath 'com.ageet:apkname:0.1'
+    }
+}
+
+apply plugin: 'com.android.application'
+apply plugin: 'apkname'
+
+android {
+    compileSdkVersion 23
+    buildToolsVersion "23.0.2"
+
+    defaultConfig {
+        minSdkVersion 15
+        targetSdkVersion 23
+
+        applicationId "com.ageet.gradle.plugin.apkname.example"
+        versionCode 1
+        versionName "1.0"
+    }
+
+    apkName {
+        format "apkname-example-${versionName}-${buildType}-${gitShortHash}"
+    }
+}
+
+task("showApkName") << {
+    android.applicationVariants.each { variant ->
+        variant.outputs*.outputFile.collect {
+            "${variant.name}: ${it.name}"
+        }.each(logger.&quiet)
+    }
+}
