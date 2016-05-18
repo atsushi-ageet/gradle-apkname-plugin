@@ -2,9 +2,6 @@ buildscript {
     repositories {
         mavenCentral()
         jcenter()
-        maven {
-            url "https://dl.bintray.com/ageet-atsushi/maven"
-        }
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:2.1.0'
@@ -33,7 +30,7 @@ android {
     }
 }
 
-task("showApkName") << {
+task showApkName << {
     android.applicationVariants.each { variant ->
         variant.outputs*.outputFile.collect {
             "${variant.name}: ${it.name}"
