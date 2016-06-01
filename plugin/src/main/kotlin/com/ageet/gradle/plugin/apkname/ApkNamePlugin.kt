@@ -35,6 +35,7 @@ class ApkNamePlugin : Plugin<Project> {
                     apkNameExtension.versionCode -> variant.mergedFlavor.versionCode.toString()
                     apkNameExtension.versionName -> variant.mergedFlavor.versionName
                     apkNameExtension.variantName -> variant.name
+                    apkNameExtension.flavorName -> variant.flavorName
                     apkNameExtension.buildType -> variant.buildType.name
                     apkNameExtension.gitShortHash -> gitShortHash
                     else -> ""

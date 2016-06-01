@@ -24,6 +24,8 @@ open class ApkNameExtension {
         get() = "#{versionName}"
     val variantName: String
         get() = "#{variantName}"
+    val flavorName: String
+        get() = "#{flavorName}"
     val buildType: String
         get() = "#{buildType}"
     val gitShortHash: String
