@@ -1,5 +1,5 @@
 group 'com.ageet'
-version '0.0.4'
+version '0.0.5'
 
 def artifactBaseName = 'apkname'
 
@@ -63,7 +63,7 @@ bintray {
 
         version {
             name = project.version
-            vcsTag = 'v0.0.4'
+            vcsTag = 'v0.0.5'
             attributes = ['gradle-plugin': 'com.ageet.apkname:com.ageet:apkname']
         }
     }
