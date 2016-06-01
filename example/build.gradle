@@ -26,7 +26,13 @@ android {
     }
 
     apkName {
-        format "apkname-example-${versionName}-${buildType}-${gitShortHash}"
+        releaseOnly true
+        format "apkname-example-${flavorName}-${versionName}-${gitShortHash}"
+    }
+
+    productFlavors {
+        f1
+        f2
     }
 }
 

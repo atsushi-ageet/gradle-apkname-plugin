@@ -13,6 +13,7 @@ package com.ageet.gradle.plugin.apkname
 open class ApkNameExtension {
 
     var format = "${projectName}_${versionName}_$gitShortHash"
+    var releaseOnly = false
 
     val projectName: String
         get() = "#{projectName}"

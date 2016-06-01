@@ -24,7 +24,9 @@ class ApkNamePlugin : Plugin<Project> {
 
     private fun Project.onAfterEvaluate() {
         if ( !hasAppPlugin ) throw RuntimeException("This project is not android project")
-        android.applicationVariants.forEach { variant ->
+        android.applicationVariants.filter { variant ->
+            !apkNameExtension.releaseOnly || variant.buildType.name == "release"
+        }.forEach { variant ->
             logger.info("Generate apk name variant = ${variant.name}, format = ${apkNameExtension.format}")
             val format = apkNameExtension.format
             val suffix = if ( variant.isSigningReady ) "" else "-unsigned"
