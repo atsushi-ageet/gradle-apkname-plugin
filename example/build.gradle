@@ -1,10 +1,12 @@
 buildscript {
     repositories {
+        google()
+        mavenLocal()
         mavenCentral()
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.3.3'
+        classpath 'com.android.tools.build:gradle:3.0.0-beta3'
         classpath 'com.ageet:apkname:0.0.6'
     }
 }
@@ -13,12 +15,12 @@ apply plugin: 'com.android.application'
 apply plugin: 'com.ageet.apkname'
 
 android {
-    compileSdkVersion 25
-    buildToolsVersion "25.0.3"
+    compileSdkVersion 26
+    buildToolsVersion "26.0.0"
 
     defaultConfig {
         minSdkVersion 15
-        targetSdkVersion 25
+        targetSdkVersion 26
 
         applicationId "com.ageet.gradle.plugin.apkname.example"
         versionCode 1
@@ -26,13 +28,24 @@ android {
     }
 
     apkName {
-        releaseOnly true
-        format "apkname-example-${flavorName}-${versionName}-${gitShortHash}"
+        format "apkname-example-$flavorName-$buildType-$versionName-$gitShortHash"
     }
 
+    flavorDimensions "dimension1", "dimension2"
+
     productFlavors {
-        f1
-        f2
+        f1 {
+            dimension "dimension1"
+        }
+        f2 {
+            dimension "dimension1"
+        }
+        f3 {
+            dimension "dimension2"
+        }
+        f4 {
+            dimension "dimension2"
+        }
     }
 }
 

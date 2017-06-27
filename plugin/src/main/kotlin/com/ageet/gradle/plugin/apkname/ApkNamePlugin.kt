@@ -1,6 +1,8 @@
 package com.ageet.gradle.plugin.apkname
 
 import com.android.build.gradle.AppExtension
+import com.android.build.gradle.api.ApkVariantOutput
+import com.android.build.gradle.api.ApplicationVariant
 import org.eclipse.jgit.api.Git
 import org.eclipse.jgit.errors.RepositoryNotFoundException
 import org.gradle.api.Plugin
@@ -26,26 +28,35 @@ class ApkNamePlugin : Plugin<Project> {
         if ( !hasAppPlugin ) throw RuntimeException("This project is not android project")
         android.applicationVariants.filter { variant ->
             !apkNameExtension.releaseOnly || variant.buildType.name == "release"
-        }.forEach { variant ->
-            logger.info("Generate apk name variant = ${variant.name}, format = ${apkNameExtension.format}")
-            val format = apkNameExtension.format
-            val suffix = if ( variant.isSigningReady ) "" else "-unsigned"
-            val apkName = """#\{\w+}""".toRegex().replace(format) { a ->
-                when ( a.value ) {
-                    apkNameExtension.projectName -> name
-                    apkNameExtension.applicationId -> variant.mergedFlavor.applicationId
-                    apkNameExtension.versionCode -> variant.mergedFlavor.versionCode.toString()
-                    apkNameExtension.versionName -> variant.mergedFlavor.versionName
-                    apkNameExtension.variantName -> variant.name
-                    apkNameExtension.flavorName -> variant.flavorName
-                    apkNameExtension.buildType -> variant.buildType.name
-                    apkNameExtension.gitShortHash -> gitShortHash
-                    else -> ""
-                }
-            } + "$suffix.apk"
-            logger.info("apkName = $apkName")
-            variant.outputs.forEach { it.outputFile = File(it.outputFile.parent, apkName) }
+        }.forEach { variant->
+            val apkNameTask = tasks.create("generate${variant.name.capitalize()}ApkName").doLast {
+                generateApkNameFrom(variant)
+            }
+            variant.preBuild.dependsOn(apkNameTask)
         }
+    }
+
+    private fun Project.generateApkNameFrom(variant: ApplicationVariant) {
+        logger.info("Generate apk name variant = ${variant.name}, format = ${apkNameExtension.format}")
+        val format = apkNameExtension.format
+        val suffix = if (variant.isSigningReady) "" else "-unsigned"
+        val apkName = """#\{\w+}""".toRegex().replace(format) { a ->
+            when (a.value) {
+                apkNameExtension.projectName -> name
+                apkNameExtension.applicationId -> variant.mergedFlavor.applicationId
+                apkNameExtension.versionCode -> variant.mergedFlavor.versionCode.toString()
+                apkNameExtension.versionName -> variant.mergedFlavor.versionName
+                apkNameExtension.variantName -> variant.name
+                apkNameExtension.flavorName -> variant.flavorName
+                apkNameExtension.buildType -> variant.buildType.name
+                apkNameExtension.gitShortHash -> gitShortHash
+                else -> ""
+            }
+        } + "$suffix.apk"
+        variant.outputs.mapNotNull { it as? ApkVariantOutput }.forEach {
+            it.outputFileName = apkName
+        }
+        logger.info("apkName = $apkName")
     }
 
     private fun Project.openGit(gitDir: File): Git = try {
