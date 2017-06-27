@@ -5,9 +5,9 @@ def artifactBaseName = 'apkname'
 
 buildscript {
     ext {
-        kotlin_version = '1.0.2'
-        dokka_version = '0.9.8'
-        jgit_version = '4.3.1.201605051710-r'
+        kotlin_version = '1.1.4-3'
+        dokka_version = '0.9.15'
+        jgit_version = '4.8.0.201706111038-r'
     }
     repositories {
         mavenCentral()
@@ -16,7 +16,7 @@ buildscript {
     dependencies {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath "org.jetbrains.dokka:dokka-gradle-plugin:$dokka_version"
-        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.6'
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7.2'
     }
 }
 
@@ -24,14 +24,15 @@ apply plugin: 'kotlin'
 
 repositories {
     mavenCentral()
+    jcenter()
 }
 
 dependencies {
     compile gradleApi()
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-    compile 'com.android.tools.build:gradle:1.5.0'
+    compile 'com.android.tools.build:gradle:2.3.3'
     compile "org.eclipse.jgit:org.eclipse.jgit:$jgit_version"
-    testCompile group: 'junit', name: 'junit', version: '4.11'
+    testCompile group: 'junit', name: 'junit', version: '4.12'
 }
 
 jar {
