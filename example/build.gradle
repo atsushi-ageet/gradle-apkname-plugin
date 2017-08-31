@@ -1,13 +1,11 @@
 buildscript {
     repositories {
         google()
-        mavenLocal()
         mavenCentral()
         jcenter()
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:3.0.0-beta3'
-        classpath 'com.ageet:apkname:0.0.6'
     }
 }
 
