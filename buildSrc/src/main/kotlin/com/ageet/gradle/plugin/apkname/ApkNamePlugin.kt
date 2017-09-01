@@ -29,10 +29,7 @@ class ApkNamePlugin : Plugin<Project> {
         android.applicationVariants.filter { variant ->
             !apkNameExtension.releaseOnly || variant.buildType.name == "release"
         }.forEach { variant->
-            val apkNameTask = tasks.create("generate${variant.name.capitalize()}ApkName").doLast {
-                generateApkNameFrom(variant)
-            }
-            variant.preBuild.dependsOn(apkNameTask)
+            generateApkNameFrom(variant)
         }
     }
 
