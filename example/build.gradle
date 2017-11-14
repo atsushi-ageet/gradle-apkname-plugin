@@ -5,7 +5,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.0.0-beta3'
+        classpath 'com.android.tools.build:gradle:3.0.0'
     }
 }
 
@@ -14,7 +14,7 @@ apply plugin: 'com.ageet.apkname'
 
 android {
     compileSdkVersion 26
-    buildToolsVersion "26.0.0"
+    buildToolsVersion "26.0.3"
 
     defaultConfig {
         minSdkVersion 15
