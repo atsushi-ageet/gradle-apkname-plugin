@@ -35,21 +35,10 @@ class ApkNamePlugin : Plugin<Project> {
 
     private fun Project.generateApkNameFrom(variant: ApplicationVariant) {
         logger.info("Generate apk name variant = ${variant.name}, format = ${apkNameExtension.format}")
+        val formatter = ApkNameFormatter(name, variant, gitShortHash)
         val format = apkNameExtension.format
         val suffix = if (variant.isSigningReady) "" else "-unsigned"
-        val apkName = """#\{\w+}""".toRegex().replace(format) { a ->
-            when (a.value) {
-                apkNameExtension.projectName -> name
-                apkNameExtension.applicationId -> variant.mergedFlavor.applicationId
-                apkNameExtension.versionCode -> variant.mergedFlavor.versionCode.toString()
-                apkNameExtension.versionName -> variant.mergedFlavor.versionName
-                apkNameExtension.variantName -> variant.name
-                apkNameExtension.flavorName -> variant.flavorName
-                apkNameExtension.buildType -> variant.buildType.name
-                apkNameExtension.gitShortHash -> gitShortHash
-                else -> ""
-            }
-        } + "$suffix.apk"
+        val apkName = "${formatter.format()}$suffix.apk"
         variant.outputs.mapNotNull { it as? ApkVariantOutput }.forEach {
             it.outputFileName = apkName
         }

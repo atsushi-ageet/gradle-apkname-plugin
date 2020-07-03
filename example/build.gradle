@@ -32,7 +32,7 @@ android {
     }
 
     apkName {
-        format "apkname-example-$flavorName-$buildType-$versionName-$gitShortHash"
+        format { "apkname-example-${it.variant.productFlavors*.name.join("-")}-${it.buildType}-${it.versionName}-${it.gitShortHash}" }
     }
 
     flavorDimensions "dimension1", "dimension2"

@@ -11,24 +11,6 @@ package com.ageet.gradle.plugin.apkname
  * @property gitShortHash git short commit hash.
  */
 open class ApkNameExtension {
-
-    var format = "${projectName}_${versionName}_$gitShortHash"
+    var format: ApkNameFormatter.()->CharSequence = { "${projectName}_${versionName}_${gitShortHash}" }
     var releaseOnly = true
-
-    val projectName: String
-        get() = "#{projectName}"
-    val applicationId: String
-        get() = "#{applicationId}"
-    val versionCode: String
-        get() = "#{versionCode}"
-    val versionName: String
-        get() = "#{versionName}"
-    val variantName: String
-        get() = "#{variantName}"
-    val flavorName: String
-        get() = "#{flavorName}"
-    val buildType: String
-        get() = "#{buildType}"
-    val gitShortHash: String
-        get() = "#{gitShortHash}"
 }
