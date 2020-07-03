@@ -7,6 +7,8 @@ import org.eclipse.jgit.api.Git
 import org.eclipse.jgit.errors.RepositoryNotFoundException
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.plugins.ExtensionAware
+import org.gradle.api.plugins.ExtensionContainer
 import java.io.File
 
 class ApkNamePlugin : Plugin<Project> {
@@ -19,7 +21,7 @@ class ApkNamePlugin : Plugin<Project> {
 
     private fun Project.onEvaluate() {
         afterEvaluate { onAfterEvaluate() }
-        apkNameExtension = extensions.create(EXTENSION_NAME, ApkNameExtension::class.java)
+        apkNameExtension = android.extensions.create(EXTENSION_NAME, ApkNameExtension::class.java)
     }
 
     private fun Project.onAfterEvaluate() {
@@ -71,6 +73,9 @@ class ApkNamePlugin : Plugin<Project> {
 
     private val Git.shortHash: String
         get() = repository.exactRef("HEAD").objectId.name.substring(0, GIT_SHORT_HASH_LENGTH)
+
+    private val AppExtension.extensions: ExtensionContainer
+        get() = (this as ExtensionAware).extensions
 
     private companion object {
         private const val GIT_SHORT_HASH_LENGTH = 7
