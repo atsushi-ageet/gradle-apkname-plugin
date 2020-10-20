@@ -19,17 +19,13 @@ class ApkNamePlugin : Plugin<Project> {
         project?.onEvaluate()
     }
 
-    private fun Project.onEvaluate() {
-        afterEvaluate { onAfterEvaluate() }
+    fun Project.onEvaluate() {
+        if (!hasAppPlugin) throw RuntimeException("This project is not android project")
         apkNameExtension = android.extensions.create(EXTENSION_NAME, ApkNameExtension::class.java)
-    }
-
-    private fun Project.onAfterEvaluate() {
-        if ( !hasAppPlugin ) throw RuntimeException("This project is not android project")
-        android.applicationVariants.filter { variant ->
-            !apkNameExtension.releaseOnly || variant.buildType.name == "release"
-        }.forEach { variant->
-            generateApkNameFrom(variant)
+        android.applicationVariants.all { variant ->
+            if (!apkNameExtension.releaseOnly || variant.buildType.name == "release") {
+                generateApkNameFrom(variant)
+            }
         }
     }
 

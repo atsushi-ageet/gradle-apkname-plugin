@@ -12,4 +12,5 @@ local.properties
 .idea/misc.xml
 .idea/gradle.xml
 .idea/uiDesigner.xml
+.idea/jarRepositories.xml
 .idea/caches/
