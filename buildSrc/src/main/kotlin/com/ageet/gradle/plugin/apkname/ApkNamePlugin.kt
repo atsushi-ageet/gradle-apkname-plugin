@@ -3,6 +3,8 @@ package com.ageet.gradle.plugin.apkname
 import com.android.build.gradle.AppExtension
 import com.android.build.gradle.api.ApkVariantOutput
 import com.android.build.gradle.api.ApplicationVariant
+import com.android.build.gradle.internal.dsl.BaseAppModuleExtension
+import com.android.build.gradle.internal.tasks.FinalizeBundleTask
 import org.eclipse.jgit.api.Git
 import org.eclipse.jgit.errors.RepositoryNotFoundException
 import org.gradle.api.Plugin
@@ -34,11 +36,20 @@ class ApkNamePlugin : Plugin<Project> {
         val formatter = ApkNameFormatter(name, variant, gitShortHash)
         val format = apkNameExtension.format
         val suffix = if (variant.isSigningReady) "" else "-unsigned"
-        val apkName = "${formatter.format()}$suffix.apk"
+        val baseName = formatter.format()
+        val apkName = "$baseName$suffix.apk"
         variant.outputs.mapNotNull { it as? ApkVariantOutput }.forEach {
             it.outputFileName = apkName
         }
         logger.info("apkName = $apkName")
+
+        afterEvaluate {
+            val task = tasks.getByName("sign${variant.name.capitalize()}Bundle") as FinalizeBundleTask
+            val bundleDir = task.finalBundleFile.get().asFile.parent
+            val bundleFile = File(bundleDir, "$baseName.aab")
+            task.finalBundleFile.set(bundleFile)
+            logger.info("bundleFile = $bundleFile")
+        }
     }
 
     private fun Project.openGit(gitDir: File): Git = try {
@@ -47,8 +58,8 @@ class ApkNamePlugin : Plugin<Project> {
         gitDir.parentFile?.let{ openGit(it) } ?: throw RepositoryNotFoundException(projectDir)
     }
 
-    private val Project.android: AppExtension
-        get() = extensions.getByName("android") as AppExtension
+    private val Project.android: BaseAppModuleExtension
+        get() = extensions.getByName("android") as BaseAppModuleExtension
 
     private val Project.hasAppPlugin: Boolean
         get() = plugins.hasPlugin("com.android.application")
