@@ -6,3 +6,4 @@ Auto naming for android apk
 * v0.1.1-v0.1.2: AGP 3.0.0
 * v0.1.3-v0.1.4: AGP 3.3.2
 * v0.1.5: AGP 4.0.0
+* v0.1.6: AGP 4.1.0
