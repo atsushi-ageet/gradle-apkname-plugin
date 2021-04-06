@@ -1,30 +1,13 @@
-buildscript {
-    ext {
-        kotlin_version = '1.4.10'
-        dokka_version = '0.9.17'
-        jgit_version = '4.8.0.201706111038-r'
-    }
-    repositories {
-        google()
-        mavenCentral()
-        jcenter()
-    }
-    dependencies {
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-        classpath "org.jetbrains.dokka:dokka-gradle-plugin:$dokka_version"
-    }
-}
-
 plugins {
     id 'signing'
     id 'maven-publish'
+    id 'org.jetbrains.kotlin.jvm' version '1.4.32'
+    id 'org.jetbrains.dokka' version "1.4.30"
 }
 
 archivesBaseName = 'apkname'
 group 'com.ageet.apkname'
 version '0.2.0'
-
-apply plugin: 'kotlin'
 
 repositories {
     google()
@@ -32,21 +15,22 @@ repositories {
     jcenter()
 }
 
+import org.jetbrains.kotlin.config.KotlinCompilerVersion
+
 dependencies {
     implementation gradleApi()
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:${KotlinCompilerVersion.VERSION}"
     implementation 'com.android.tools.build:gradle:4.1.0'
-    implementation "org.eclipse.jgit:org.eclipse.jgit:$jgit_version"
+    implementation 'org.eclipse.jgit:org.eclipse.jgit:4.8.0.201706111038-r'
     testImplementation group: 'junit', name: 'junit', version: '4.12'
 }
 
-apply plugin: 'org.jetbrains.dokka'
-
-dokka {
-    moduleName = archivesBaseName
-    outputFormat = 'javadoc'
-    outputDirectory = "$buildDir/javadoc"
-    sourceDirs = sourceSets.main.kotlin.srcDirs
+dokkaJavadoc.configure {
+    dokkaSourceSets {
+        named("main") {
+            noAndroidSdkLink.set(false)
+        }
+    }
 }
 
 task sourcesJar(type: Jar) {
@@ -54,9 +38,9 @@ task sourcesJar(type: Jar) {
     from sourceSets.main.kotlin.srcDirs
 }
 
-task javadocJar(type: Jar, dependsOn: dokka) {
+task javadocJar(type: Jar, dependsOn: dokkaJavadoc) {
     archiveClassifier.set('javadoc')
-    from dokka.outputDirectory
+    from dokkaJavadoc.outputDirectory
 }
 
 publishing {
