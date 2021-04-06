@@ -2,21 +2,24 @@ buildscript {
     repositories {
         google()
         mavenCentral()
-        jcenter()
+        jcenter().mavenContent {
+            includeGroup("org.jetbrains.trove4j")
+        }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:4.1.0'
+        classpath 'com.android.tools.build:gradle:4.1.3'
     }
+}
+
+plugins {
+    id 'com.android.application'
+    id 'com.ageet.apkname'
 }
 
 repositories {
     google()
     mavenCentral()
-    jcenter()
 }
-
-apply plugin: 'com.android.application'
-apply plugin: 'com.ageet.apkname'
 
 android {
     compileSdkVersion 30
