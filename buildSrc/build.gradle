@@ -7,7 +7,7 @@ plugins {
 
 archivesBaseName = 'apkname'
 group 'com.ageet.apkname'
-version '0.3.0'
+version '0.3.0-SNAPSHOT'
 
 repositories {
     google()
@@ -81,7 +81,10 @@ publishing {
     repositories {
         maven {
             name = "sonatype"
-            url = "https://s01.oss.sonatype.org/content/repositories/snapshots/"
+            def releasesRepoUrl = "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
+            def snapshotsRepoUrl = "https://s01.oss.sonatype.org/content/repositories/snapshots/"
+            url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
+            logger.quiet("sonatype: $url")
             credentials {
                 username project.properties["sonatype.user"]
                 password project.properties["sonatype.password"]
