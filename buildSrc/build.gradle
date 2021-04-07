@@ -1,8 +1,10 @@
 plugins {
     id 'signing'
     id 'maven-publish'
+    id 'java-gradle-plugin'
     id 'org.jetbrains.kotlin.jvm' version '1.4.32'
     id 'org.jetbrains.dokka' version "1.4.30"
+    id 'com.gradle.plugin-publish' version '0.12.0'
 }
 
 archivesBaseName = 'apkname'
@@ -43,56 +45,78 @@ task javadocJar(type: Jar, dependsOn: dokkaJavadoc) {
     from dokkaJavadoc.outputDirectory
 }
 
-publishing {
-    publications {
-        release(MavenPublication) {
-            artifactId archivesBaseName
-            from components.java
-            artifact sourcesJar
-            artifact javadocJar
-
-            pom {
-                name = archivesBaseName
-                description = 'Auto naming for android apk'
-                url = 'https://github.com/atsushi-ageet/gradle-apkname-plugin'
-                licenses {
-                    license {
-                        name = 'The Apache License, Version 2.0'
-                        url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
-                    }
-                }
-
-                developers {
-                    developer {
-                        id = 'atsushi'
-                        name = 'Atsushi Yamauchi'
-                        email = 'atsushi@ageet.com'
-                    }
-                }
-
-                scm {
-                    connection = 'scm:git:git://github.com/atsushi-ageet/gradle-apkname-plugin.git'
-                    developerConnection = 'scm:git:ssh:git@github.com:atsushi-ageet/gradle-apkname-plugin.git'
-                    url = 'https://github.com/atsushi-ageet/gradle-apkname-plugin/tree/master'
-                }
-            }
-        }
-    }
-    repositories {
-        maven {
-            name = "sonatype"
-            def releasesRepoUrl = "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
-            def snapshotsRepoUrl = "https://s01.oss.sonatype.org/content/repositories/snapshots/"
-            url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
-            logger.quiet("sonatype: $url")
-            credentials {
-                username project.properties["sonatype.user"]
-                password project.properties["sonatype.password"]
-            }
+gradlePlugin {
+    plugins {
+        apkname {
+            id = 'com.ageet.apkname'
+            displayName = 'Gradle apkname plugin'
+            description = 'Auto naming for android apk'
+            implementationClass = 'com.ageet.gradle.plugin.apkname.ApkNamePlugin'
         }
     }
 }
 
-signing {
-    sign publishing.publications.release
+pluginBundle {
+    website = 'https://github.com/atsushi-ageet/gradle-apkname-plugin'
+    vcsUrl = 'https://github.com/atsushi-ageet/gradle-apkname-plugin'
+    tags = ['android', 'apk', 'aab']
+}
+
+afterEvaluate {
+    publishing {
+        publications {
+            pluginMaven {
+                artifactId archivesBaseName
+                artifact sourcesJar
+                artifact javadocJar
+
+                pom {
+                    name = archivesBaseName
+                    description = 'Auto naming for android apk'
+                    url = 'https://github.com/atsushi-ageet/gradle-apkname-plugin'
+                    licenses {
+                        license {
+                            name = 'The Apache License, Version 2.0'
+                            url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                        }
+                    }
+
+                    developers {
+                        developer {
+                            id = 'atsushi'
+                            name = 'Atsushi Yamauchi'
+                            email = 'atsushi@ageet.com'
+                        }
+                    }
+
+                    scm {
+                        connection = 'scm:git:git://github.com/atsushi-ageet/gradle-apkname-plugin.git'
+                        developerConnection = 'scm:git:ssh:git@github.com:atsushi-ageet/gradle-apkname-plugin.git'
+                        url = 'https://github.com/atsushi-ageet/gradle-apkname-plugin/tree/master'
+                    }
+                }
+            }
+        }
+        repositories {
+            maven {
+                name = "sonatype"
+                def releasesRepoUrl = "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
+                def snapshotsRepoUrl = "https://s01.oss.sonatype.org/content/repositories/snapshots/"
+                url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
+                logger.quiet("sonatype: $url")
+                credentials {
+                    username project.properties["sonatype.user"]
+                    password project.properties["sonatype.password"]
+                }
+            }
+            maven {
+                name = 'localPluginRepository'
+                url = '../local-plugin-repository'
+            }
+        }
+    }
+
+    signing {
+        sign publishing.publications.pluginMaven
+    }
 }

@@ -14,3 +14,5 @@ local.properties
 .idea/uiDesigner.xml
 .idea/jarRepositories.xml
 .idea/caches/
+
+local-plugin-repository/
