@@ -7,7 +7,7 @@ plugins {
 
 archivesBaseName = 'apkname'
 group 'com.ageet.apkname'
-version '0.3.0-SNAPSHOT'
+version '0.3.1'
 
 repositories {
     google()
