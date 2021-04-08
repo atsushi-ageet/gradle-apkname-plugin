@@ -94,6 +94,15 @@ afterEvaluate {
                         developerConnection = 'scm:git:ssh:git@github.com:atsushi-ageet/gradle-apkname-plugin.git'
                         url = 'https://github.com/atsushi-ageet/gradle-apkname-plugin/tree/master'
                     }
+
+                    withXml {
+                        Node pomNode = asNode()
+                        pomNode.dependencies.'*'.findAll() {
+                            it.groupId.text() == 'com.android.tools.build' && it.artifactId.text() == 'gradle'
+                        }.each() {
+                            it.parent().remove(it)
+                        }
+                    }
                 }
             }
         }
