@@ -18,13 +18,12 @@ class ApkNamePlugin : Plugin<Project> {
     private lateinit var apkNameExtension: ApkNameExtension
 
     override fun apply(project: Project) {
-        project.afterEvaluate {
-            it.onAfterEvaluate()
+        project.pluginManager.withPlugin("com.android.application") {
+            project.onAppliedPlugin()
         }
     }
 
-    fun Project.onAfterEvaluate() {
-        if (!hasAppPlugin) throw RuntimeException("This project is not android project")
+    fun Project.onAppliedPlugin() {
         apkNameExtension = android.extensions.create(EXTENSION_NAME, ApkNameExtension::class.java)
         android.applicationVariants.all { variant ->
             if (!apkNameExtension.releaseOnly || variant.buildType.name == "release") {
@@ -62,9 +61,6 @@ class ApkNamePlugin : Plugin<Project> {
 
     private val Project.android: BaseAppModuleExtension
         get() = extensions.getByName("android") as BaseAppModuleExtension
-
-    private val Project.hasAppPlugin: Boolean
-        get() = plugins.hasPlugin("com.android.application")
 
     private val Project.gitShortHash: String
         get() = openGit(projectDir).shortHash
