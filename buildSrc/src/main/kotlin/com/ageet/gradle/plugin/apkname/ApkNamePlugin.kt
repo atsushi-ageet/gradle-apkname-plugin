@@ -17,11 +17,13 @@ class ApkNamePlugin : Plugin<Project> {
 
     private lateinit var apkNameExtension: ApkNameExtension
 
-    override fun apply(project: Project?) {
-        project?.onEvaluate()
+    override fun apply(project: Project) {
+        project.afterEvaluate {
+            it.onAfterEvaluate()
+        }
     }
 
-    fun Project.onEvaluate() {
+    fun Project.onAfterEvaluate() {
         if (!hasAppPlugin) throw RuntimeException("This project is not android project")
         apkNameExtension = android.extensions.create(EXTENSION_NAME, ApkNameExtension::class.java)
         android.applicationVariants.all { variant ->
