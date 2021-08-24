@@ -14,7 +14,6 @@ version '0.3.3'
 repositories {
     google()
     mavenCentral()
-    jcenter()
 }
 
 import org.jetbrains.kotlin.config.KotlinCompilerVersion
