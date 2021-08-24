@@ -2,8 +2,8 @@ plugins {
     id 'signing'
     id 'maven-publish'
     id 'java-gradle-plugin'
-    id 'org.jetbrains.kotlin.jvm' version '1.4.32'
-    id 'org.jetbrains.dokka' version "1.4.30"
+    id 'org.jetbrains.kotlin.jvm' version '1.5.21'
+    id 'org.jetbrains.dokka' version "1.5.0"
     id 'com.gradle.plugin-publish' version '0.12.0'
 }
 
@@ -21,7 +21,7 @@ import org.jetbrains.kotlin.config.KotlinCompilerVersion
 dependencies {
     implementation gradleApi()
     implementation "org.jetbrains.kotlin:kotlin-stdlib:${KotlinCompilerVersion.VERSION}"
-    implementation 'com.android.tools.build:gradle:4.1.3'
+    implementation 'com.android.tools.build:gradle:7.0.1'
     implementation 'org.eclipse.jgit:org.eclipse.jgit:5.11.0.202103091610-r'
     testImplementation 'junit:junit:4.13.2'
 }
@@ -95,7 +95,7 @@ afterEvaluate {
                     }
 
                     withXml {
-                        Node pomNode = asNode()
+                        def pomNode = asNode()
                         pomNode.dependencies.'*'.findAll() {
                             it.groupId.text() == 'com.android.tools.build' && it.artifactId.text() == 'gradle'
                         }.each() {
